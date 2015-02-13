@@ -1,0 +1,103 @@
+#!/bin/bash
+# byzanz-record-window
+# Source https://gist.github.com/lucy/3042755
+
+# dependency checks
+if ! which xwininfo &>/dev/null;  then
+	echo "Dependency xwininfo not met."
+	deps_ok=NO
+fi
+
+if ! which byzanz-record &>/dev/null;  then
+	echo "Dependency byzanz not met."
+	deps_ok=NO
+fi
+
+if [[ $deps_ok == NO ]]; then
+	echo "Please install the needed dependencies any try again."
+	exit 1
+fi
+
+# Display usage info
+recrec-usage() {
+cat <<"USAGE"
+Usage: vhost [OPTIONS] <name>
+	-h|--help	this screen
+	-name		set custom name for output file
+	-ext 		set extension (gif|flv|ogg|ogv)
+	-del 		set delay before start recording
+	-dur 		set recording duration
+
+IMPORTANT Notes:
+1- You need xwininfo to get a window info.
+2- You need byzanz-record, actually a recording app
+
+Example of use:
+recrec -name test-cast -ext gif -del 3 -dur 15
+USAGE
+exit 0
+}
+
+extension='gif'
+name='screen-cast'.$extension
+duration=2
+delay=0
+
+# Loop to read options and arguments
+# TODO: make params
+while [ $1 ]; do
+	case "$1" in
+		'-ext') extention="$2";;
+		'-name') name="$2";;
+		'-del') delay="$2";;
+		'-dur') duration="$2";;
+		'-h'|'--help') recrec-usage;;
+	esac
+	shift
+done
+
+#get stuff from xwininfo
+xwininfo=$(xwininfo -shape)
+
+beep() {
+	paplay /usr/share/sounds/KDE-Im-Irc-Event.ogg &
+}
+
+getnum()
+{
+	echo "$xwininfo" | grep "$1" | tr -cd [:digit:]
+}
+
+# Define and create default values
+x=$(getnum "Absolute upper-left X:")
+y=$(getnum "Absolute upper-left Y:")
+w=$(getnum "Width:")
+h=$(getnum "Height:")
+
+
+
+# Show record params
+echo '_________________________________'
+echo '- Window params:'
+echo '---------------------------------'
+echo '- width:' '['$w']px'
+echo '- height:' '['$h']px'
+echo '- position X:' '['$x']px'
+echo '- position Y:' '['$y']px'
+echo '_________________________________'
+echo '- duration:' '['$duration']sec'
+echo '- delay:' '['$delay']sec'
+echo '- file name:' '['$name.$extention']'
+echo '---------------------------------'
+
+# Delay before record
+for (( i=$delay; i>0; --i )) ; do
+	echo $i
+	sleep 1
+done
+
+echo 'Start recording'
+beep
+byzanz-record --cursor --duration=$duration --x=$x --y=$y --width=$w --height=$h ~/$name.$extention
+echo 'Stop recording'
+beep
