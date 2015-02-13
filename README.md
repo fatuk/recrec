@@ -20,9 +20,15 @@ Check it out `recrec --help`.
 | `-dur`               | set recording duration             |
 
 
-## Example of use:
+## How to use:
 
-`recrec -name test-cast -ext gif -del 3 -dur 15`
+<img src="demo.gif" alt="recrec demo">
+
+1. Type somothing like that in your terminal: `recrec -name test-cast -ext gif -del 3 -dur 15`
+2. Choose window you want to record by clicking on it
+3. Wait your delay before record, maybe you'll here some BEEP, if you make sound in your speakers more loud)
+4. Do some stuff
+5. And you have cool gif
 
 ## IMPORTANT Notes:
 
