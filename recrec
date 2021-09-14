@@ -60,7 +60,7 @@ done
 xwininfo=$(xwininfo -shape)
 
 beep() {
-	paplay /usr/share/sounds/KDE-Im-Irc-Event.ogg &
+	paplay /usr/share/sounds/freedesktop/stereo/complete.oga &
 }
 
 getnum()
